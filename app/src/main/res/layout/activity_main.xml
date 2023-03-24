@@ -20,77 +20,35 @@
         android:id="@+id/logo"
         />
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="5dp"
+        android:id="@+id/card"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_qr_code_scanner_24"
+            android:padding="10dp"
+            />
+    </androidx.cardview.widget.CardView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintTop_toBottomOf="@+id/card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Benvenuto, compila i campi per accere"
+        android:layout_marginTop="20dp"
+        android:text="Clicca sul QR per registrare il dispositivo"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:id="@+id/benvenuto"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        app:layout_constraintTop_toBottomOf="@+id/benvenuto"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="30dp"
-        android:textSize="18dp"
-        android:id="@+id/labelemail"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/labelemail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:hint="Es: vantea@smart.it"
-        android:textAlignment="center"
-        android:id="@+id/email"
-        android:inputType="textEmailAddress"
-        android:textSize="20dp"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/email"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="20dp"
-        android:text="Password"
-        android:id="@+id/password_label"
-        android:textSize="18dp"
-        />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/password_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:hint="Es: Miapasswords1234!"
-        android:textSize="20dp"
-        android:textAlignment="center"
-        android:inputType="textPassword"
-        android:id="@+id/password"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Accedi"
-        android:textColor="@color/white"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="#117982"
-        android:textSize="18dp"
-        app:cornerRadius="20dp"
-        />
 </androidx.constraintlayout.widget.ConstraintLayout>
