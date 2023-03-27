@@ -97,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
-                Toast.makeText(getApplicationContext(), "Autenticazione fallita",
-                                Toast.LENGTH_SHORT)
-                        .show();
             }
         });
 
