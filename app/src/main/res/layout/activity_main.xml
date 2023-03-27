@@ -26,12 +26,29 @@
         app:layout_constraintTop_toBottomOf="@+id/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Registra la password"
+        android:text="Registra la password (6 numeri)"
         android:layout_marginTop="15dp"
         android:textSize="20dp"
         android:textColor="@color/black"
         android:textFontWeight="900"
         android:id="@+id/labelStart"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/labelStart"
+        android:id="@+id/numberPassword"
+        android:layout_marginTop="30dp"
+        android:inputType="numberPassword"
+        android:background="#00000000"
+        android:textSize="28dp"
+        android:clickable="false"
+        android:maxLength="6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAlignment="center"
+        android:letterSpacing="0.3"
         />
 
     <androidx.cardview.widget.CardView
@@ -43,7 +60,6 @@
         app:layout_constraintEnd_toStartOf="@id/number_2"
         app:cardCornerRadius="50dp"
         app:layout_constraintTop_toTopOf="@id/number_2"
-
         android:id="@+id/number_1"
         >
         <TextView
@@ -66,7 +82,7 @@
         app:layout_constraintEnd_toStartOf="@id/number_3"
         app:layout_constraintStart_toEndOf="@id/number_1"
         app:cardCornerRadius="50dp"
-        app:layout_constraintTop_toBottomOf="@id/labelStart"
+        app:layout_constraintTop_toBottomOf="@id/numberPassword"
         android:layout_marginTop="30dp"
         android:id="@+id/number_2"
         >
@@ -270,4 +286,39 @@
             />
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="8dp"
+        android:shape="ring"
+        app:layout_constraintStart_toEndOf="@+id/number_0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="50dp"
+        app:layout_constraintTop_toBottomOf="@id/number_8"
+        android:id="@+id/cancel"
+        android:layout_marginTop="20dp"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_backspace_24"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="12dp"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/number_0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        android:text="avanti"
+        android:backgroundTint="@color/black"
+        android:textSize="20dp"
+        android:id="@+id/bottone"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

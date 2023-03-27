@@ -13,6 +13,9 @@
         android:theme="@style/Theme.VanteaAccess"
         tools:targetApi="33">
         <activity
+            android:name=".Logged"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -6,6 +6,7 @@ android {
     namespace 'it.vantea.vanteaaccess'
     compileSdk 33
 
+
     defaultConfig {
         applicationId "it.vantea.vanteaaccess"
         minSdk 24
