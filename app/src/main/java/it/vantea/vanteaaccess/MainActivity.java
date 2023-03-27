@@ -1,7 +1,14 @@
 package it.vantea.vanteaaccess;
 
+import static android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG;
+import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,19 +19,26 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CardView number1,number2,number3,number4,number5,number6,number7,number8,number9,number0, cancel;
+    private CardView number1,number2,number3,number4,number5,number6,number7,number8,number9,number0, cancel, touchid;
     private TextView numberPassword, labelLog;
     private String password = "";
     private Button bottone;
     private boolean loggato = false;
 
     private String letto = "";
+
+    private Executor executor;
+    private BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +58,63 @@ public class MainActivity extends AppCompatActivity {
         bottone = findViewById(R.id.bottone);
         cancel = findViewById(R.id.cancel);
         labelLog = findViewById(R.id.labelStart);
+        touchid = findViewById(R.id.touchid);
+        touchid.setVisibility(View.GONE);
+
 
         try{
             letto = leggi();
-            Log.e("FILE", letto);
             if(letto.equals("")) loggato=false;
             else loggato = true;
         }catch(Exception e){}
 
         if(loggato == true){
             labelLog.setText("Bentornato, per favore immetti il codice oppure accedi tramite touch id");
+            touchid.setVisibility(View.VISIBLE);
         }
+
+        executor = ContextCompat.getMainExecutor(this);
+        biometricPrompt = new BiometricPrompt(MainActivity.this,
+                executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode,
+                                              @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Toast.makeText(getApplicationContext(),
+                                "Errore nell'autenticazione: " + errString, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(
+                    @NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                Intent intent = new Intent(MainActivity.this, Logged.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(getApplicationContext(), "Autenticazione fallita",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Vantea SMART")
+                .setSubtitle("Log in con Impronta Digitale")
+                .setNegativeButtonText("Cancella")
+                .build();
+
+
+
+        touchid.setOnClickListener(view -> {
+            biometricPrompt.authenticate(promptInfo);
+        });
+
 
         cancel.setOnClickListener(l -> {
 
@@ -91,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.create();
                     builder.show();
                 }else{
-                    if(password.equals(letto)){
+                    if(letto.equals(password)){
                         Intent intent = new Intent(MainActivity.this, Logged.class);
                         startActivity(intent);
                         finish();
@@ -102,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
                         builder.setPositiveButton(Html.fromHtml("<font color='black'>OK</font>"), null);
                         builder.create();
                         builder.show();
+
+                        password = "";
+                        numberPassword.setText(password);
                     }
                 }
             }else{
@@ -186,15 +249,21 @@ public class MainActivity extends AppCompatActivity {
 
     private String leggi(){
         File file = new File(getFilesDir(), "password.pwd");
-        int length = (int) file.length();
-        byte[] bytes = new byte[length];
-        try(FileInputStream in = new FileInputStream(file)) {
-            int a = in.read();
-        }catch(Exception e){
-            Log.d("ERRORE", "leggi: ");
-            e.printStackTrace();
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+            }
+            br.close();
         }
-        Log.d("LETTO", String());
-        return new String(bytes);
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+;
+        return text.toString();
     }
 }
