@@ -360,6 +360,7 @@
                 app:layout_constraintEnd_toStartOf="@id/impronta"
                 app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/testoimpronta"
+                android:textSize="15dp"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

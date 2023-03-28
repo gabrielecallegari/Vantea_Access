@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         }catch(Exception e){}
 
         if(loggato == true){
-            labelLog.setText("Bentornato, per favore immetti il codice oppure accedi tramite touch id");
+            labelLog.setText("Bentornato/a, per favore immetti il codice oppure accedi tramite touch id");
             touchid.setVisibility(View.VISIBLE);
         }
 
