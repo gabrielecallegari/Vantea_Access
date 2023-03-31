@@ -19,6 +19,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServerConnection extends AppCompatActivity {
 
@@ -34,13 +36,17 @@ public class ServerConnection extends AppCompatActivity {
         String id = getIntent().getStringExtra("code");
          // url http://mioproxy.com:9080/openam/json/realm=google-totp/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId=
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://10.24.64.128:9080/openam/json/realm=google-totp/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
+        String id2 = "122.122.122.122";
+        String url = "http://192.168.0.107:9080/openam/json/qr_example/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
+
+
+        String url2 = "http://192.168.0.107:9081/json/serverinfo/*";
 
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.d("VOLLEY", response);
+                    Log.e("VOLLEY", response);
                     pb.setVisibility(View.GONE);
                 }
             }, new Response.ErrorListener() {
@@ -56,6 +62,7 @@ public class ServerConnection extends AppCompatActivity {
 
                 @Override
                 public byte[] getBody() throws AuthFailureError {
+                    Log.e("VOLLEY", "Errore, autenticazione fallita");
                     return null;
                 }
 
@@ -64,11 +71,21 @@ public class ServerConnection extends AppCompatActivity {
                     String responseString = "";
                     if (response != null) {
                         responseString = String.valueOf(response.statusCode);
+                        Log.e("TAG", "parseNetworkResponse: " );
                         // can get more details such as response.headers
                     }
                     return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
                 }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String,String> params = new HashMap<String, String>();
+                    params.put("Content-Type","application/json;charset=UTF-8");
+                    return params;
+                }
             };
+
+            requestQueue.add(stringRequest);
         }catch(Exception e){
             Log.e("ERRORE COMUNICAZIONE","ERRORE");
         }

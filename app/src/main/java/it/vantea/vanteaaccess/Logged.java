@@ -25,7 +25,12 @@ public class Logged extends AppCompatActivity {
         }
 
         carta.setOnClickListener( l -> {
-            Intent intent = new Intent(Logged.this, Scanner.class);
+            //Fase definitiva usare questo
+            //Intent intent = new Intent(Logged.this, Scanner.class);
+
+            //In testing usare questo
+            Intent intent = new Intent(Logged.this, ServerConnection.class);
+            intent.putExtra("code","AQIC+dop8oxWG4zBgFFdb0Q2H3PoPY+zaTU9RAnzvgGzAxcVkpefjcHmJAmqaiZLrt8vI+rlC5su6Wvj1CWhA+wOZJKqi8DSS6pfNumqgTxH5TsEPtKIE76WNgYlLrNI24u6pVSWeBKnMt/Jl2estAalaA==");
             startActivity(intent);
         });
     }

@@ -21,7 +21,9 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.VanteaAccess"
-        tools:targetApi="33">
+        tools:targetApi="33"
+        android:networkSecurityConfig="@xml/resource"
+        >
         <activity
             android:name=".ServerConnection"
             android:exported="false" />
