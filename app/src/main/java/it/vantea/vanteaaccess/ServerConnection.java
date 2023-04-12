@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -46,11 +47,11 @@ public class ServerConnection extends AppCompatActivity {
          // url http://mioproxy.com:9080/openam/json/realm=google-totp/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId=
 
         try {
-            connection(id);
+            auth();
+            //connection(id);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        Log.e("TAG", "onCreate: " );
 
 
 
@@ -58,13 +59,37 @@ public class ServerConnection extends AppCompatActivity {
 
     }
 
+    private void auth() throws JSONException {
+        String url = "http://mioproxy.com:9080/openam/json/authenticate";
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RISPOSTA", "onResponse: "+response.toString());
+                stopProgressBar();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                alertErrore();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String , String>();
+                headers.put("X-OpenAM-Username","amadmin");
+                headers.put("X-OpenAM-Password","password");
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
+
     private void connection(String id) throws JSONException {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = "http://192.168.0.107:9080/openam/json/qr_example/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
-
-
-        String url2 = "http://192.168.0.107:9081/json/serverinfo/*";
-
 
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("Title", "Android Volley Demo");
@@ -82,7 +107,7 @@ public class ServerConnection extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("VOLLEY", error.toString());
+                    Log.e("QUI", error.toString());
                     alertErrore();
                 }
             }) {
@@ -133,7 +158,7 @@ public class ServerConnection extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(Html.fromHtml("<font color='red'>ERRORE</font>"));
         builder.setMessage("Si è verificato un errore nella connessione al server");
-        builder.setPositiveButton(Html.fromHtml("<font color='#039221'>>TORNA ALLA HOME</font>"), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(Html.fromHtml("<font color='black'>TORNA ALLA HOME</font>"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
                 Intent intent = new Intent(ServerConnection.this, Logged.class);
                 startActivity(intent);
@@ -142,6 +167,14 @@ public class ServerConnection extends AppCompatActivity {
         });;
         builder.create();
         builder.show();
+    }
 
+    private void stopProgressBar(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pb.setVisibility(View.GONE);
+            }
+        });
     }
 }

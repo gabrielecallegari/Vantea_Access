@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         touchid.setVisibility(View.GONE);
 
 
+
+
         try{
             letto = leggi();
             if(letto.equals("")) loggato=false;
