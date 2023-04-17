@@ -34,10 +34,6 @@ public class ServerConnection extends AppCompatActivity {
 
     private ProgressBar pb;
 
-    private boolean errorAlert = false;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +63,16 @@ public class ServerConnection extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e("RISPOSTA", "onResponse: "+response.toString());
+                String risposta [] = response.toString().split(",");
+                String t[] = risposta[0].split(":");
+                String token = t[1];
+                token = token.replace("\"","");
+                Log.e("TOKEN", token);
+                try {
+                    connection(token);
+                } catch (JSONException e) {
+                    alertErrore();
+                }
                 stopProgressBar();
             }
         }, new Response.ErrorListener() {
@@ -89,7 +95,7 @@ public class ServerConnection extends AppCompatActivity {
 
     private void connection(String id) throws JSONException {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://192.168.0.107:9080/openam/json/qr_example/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
+        String url = "http://mioproxy.com:9080/openam/json/qr/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
 
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("Title", "Android Volley Demo");
@@ -97,59 +103,28 @@ public class ServerConnection extends AppCompatActivity {
         final String requestBody = jsonBody.toString();
 
 
-        try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.e("VOLLEY", response);
-                    pb.setVisibility(View.GONE);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("QUI", error.toString());
-                    alertErrore();
-                }
-            }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RISPOSTA 2", "onResponse: "+response.toString());
+                stopProgressBar();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                alertErrore();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String , String>();
+                headers.put("Content-Type","application/json;charset=UTF-8");
+                return headers;
+            }
+        };
 
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    try {
-                        return requestBody == null ? null : requestBody.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
-                        return null;
-                    }
-                }
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
 
-                @Override
-                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    String responseString = "";
-                    if (response != null) {
-                        responseString = String.valueOf(response.statusCode);
-                        Log.e("TAG", "parseNetworkResponse: " );
-                        pb.setVisibility(View.GONE);
-                    }
-                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                }
-
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String,String> params = new HashMap<String, String>();
-                    params.put("Content-Type","application/json;charset=UTF-8");
-                    return params;
-                }
-            };
-
-            requestQueue.add(stringRequest);
-        }catch(Exception e){
-            Log.e("ERRORE COMUNICAZIONE","ERRORE");
-            alertErrore();
-        }
 
     }
 

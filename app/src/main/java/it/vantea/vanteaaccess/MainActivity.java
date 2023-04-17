@@ -61,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
         touchid = findViewById(R.id.touchid);
         touchid.setVisibility(View.GONE);
 
-
+        String message = getIntent().getStringExtra("message");
+        if(null != message) {
+            Log.e("MESSAGGIO", message);
+        }
 
 
         try{
@@ -70,9 +73,15 @@ public class MainActivity extends AppCompatActivity {
             else loggato = true;
         }catch(Exception e){}
 
-        if(loggato == true){
+        if(loggato == true && null == message){
             labelLog.setText("Bentornato/a, per favore immetti il codice oppure accedi tramite touch id");
             touchid.setVisibility(View.VISIBLE);
+        }else{
+            if(loggato == true){
+                labelLog.setText(message);
+                touchid.setVisibility(View.GONE);
+                loggato = false;
+            }
         }
 
         executor = ContextCompat.getMainExecutor(this);
