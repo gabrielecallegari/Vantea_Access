@@ -27,64 +27,60 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerConnection extends AppCompatActivity {
 
     private ProgressBar pb;
+    private String qrId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_connection);
         pb=findViewById(R.id.progress);
-        String id = getIntent().getStringExtra("code");
-         // url http://mioproxy.com:9080/openam/json/realm=google-totp/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId=
-
+        qrId = getIntent().getStringExtra("code");
         try {
             auth();
-            //connection(id);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
 
-
-
-
     }
 
     private void auth() throws JSONException {
-        String url = "http://mioproxy.com:9080/openam/json/authenticate";
+        String url = "http://openam.docker.com:8080/openam/json/authenticate";
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e("RISPOSTA", "onResponse: "+response.toString());
-                String risposta [] = response.toString().split(",");
-                String t[] = risposta[0].split(":");
-                String token = t[1];
-                token = token.replace("\"","");
-                Log.e("TOKEN", token);
+                String split [] = response.toString().split(",");
+                String split2 [] = split[0].split(":");
+                String token = split2[1];
+                token = token.substring(1, token.length()-1);
+                Log.e("TOKEN", "onResponse: "+token);
                 try {
                     connection(token);
                 } catch (JSONException e) {
-                    alertErrore();
+                    Log.e("ERRORE", "Connessione seconda parte");
                 }
-                stopProgressBar();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 alertErrore();
+                Log.e("ERRORE NELLA CONNESSIONE", "onErrorResponse: "+error.toString());
             }
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String , String>();
-                headers.put("X-OpenAM-Username","amadmin");
+                headers.put("X-OpenAM-Username","flavio");
                 headers.put("X-OpenAM-Password","password");
                 return headers;
             }
@@ -93,20 +89,21 @@ public class ServerConnection extends AppCompatActivity {
         Volley.newRequestQueue(this).add(jsonObjectRequest);
     }
 
+
+
     private void connection(String id) throws JSONException {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://mioproxy.com:9080/openam/json/qr/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
-
-        JSONObject jsonBody = new JSONObject();
-        jsonBody.put("Title", "Android Volley Demo");
-        jsonBody.put("Author", "BNK");
-        final String requestBody = jsonBody.toString();
-
+        String url = "http://openam.docker.com:8080/openam/json/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e("RISPOSTA 2", "onResponse: "+response.toString());
+                try {
+                    finalSend(id, response.toString());
+                } catch (JSONException e) {
+                    Log.e("ERRORE", "Errore terzo invio");
+                }
                 stopProgressBar();
             }
         }, new Response.ErrorListener() {
@@ -125,7 +122,51 @@ public class ServerConnection extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(jsonObjectRequest);
 
+    }
 
+
+    private void finalSend(String id, String body) throws JSONException {
+        String url = "http://openam.docker.com:8080/openam/json/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
+
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RISPOSTA", "onResponse: "+response.toString());
+                stopProgressBar();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                alertErrore();
+                Log.e("ERRORE NELLA CONNESSIONE", "onErrorResponse: "+error.toString());
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String , String>();
+                headers.put("Content-Type","application/json;charset=UTF-8");
+                return headers;
+            }
+
+            @Override
+            public byte[] getBody() {
+                //Elaborazione Body (aggiunta codice del QR)
+                String myBody = body.substring(0, body.length()-1-5);
+                myBody = myBody + ""+qrId+"\"}]}]}";
+                Log.e("BODY", "Body Mandato: "+myBody);
+                try {
+                    return myBody.getBytes(StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", "utf-8");
+                    Log.e("ECCEZIONE GET BODY", "Errore" );
+                    return null;
+                }
+            }
+        };
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
     }
 
     private void alertErrore(){
