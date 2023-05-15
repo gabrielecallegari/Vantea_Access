@@ -30,6 +30,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -67,6 +71,7 @@ public class ServerConnection extends AppCompatActivity {
 
         btn.setOnClickListener( l -> {
             Intent intent = new Intent(ServerConnection.this, Logged.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         });
@@ -101,9 +106,21 @@ public class ServerConnection extends AppCompatActivity {
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+                JSONObject obj = null;
+
+                try {
+                    obj = new JSONObject(leggi());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 HashMap<String, String> headers = new HashMap<String , String>();
-                headers.put("X-OpenAM-Username","flavio");
-                headers.put("X-OpenAM-Password","password");
+                try {
+                    headers.put("X-OpenAM-Username",obj.get("username").toString());
+                    headers.put("X-OpenAM-Password",obj.get("password").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 return headers;
             }
         };
@@ -217,5 +234,25 @@ public class ServerConnection extends AppCompatActivity {
                 txt.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private String leggi(){
+        File file = new File(getFilesDir(), "password.pwd");
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+            }
+            br.close();
+        }
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+        ;
+        return text.toString();
     }
 }

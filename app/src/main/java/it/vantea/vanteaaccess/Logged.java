@@ -65,16 +65,14 @@ public class Logged extends AppCompatActivity {
 
         qr.setOnClickListener( l -> {
             //Fase definitiva usare questo
-            //Intent intent = new Intent(Logged.this, Scanner.class);
+            Intent intent = new Intent(Logged.this, Scanner.class);
 
             //In testing usare questo
 
-            Intent intent = new Intent(Logged.this, ServerConnection.class);
-            intent.putExtra("code","AQICzK6N3B8+2gix69rgWTOGt0T3r1SGew2+yvGDUz5l2wzzsZkz+3z3DN2oWcLwYEyCakPBFdzk7JGd8cNsE02XANfa5Uj1WvuRczcMspCZJ1FlQeEpxg5gLn23VSFukQGKqEl5NI85c8s4OIyvSn0PZjjMDyLTsMwT");
+            //Intent intent = new Intent(Logged.this, ServerConnection.class);
+            //intent.putExtra("code","AQICzK6N3B8+2gix69rgWTOGtzTo9P1gHcW19pq1gGOF5UbQYd7yv/h043Ur6kpR+iZAQKCB4GEk9hg+OKu583HOe1j80YKGhdES1Bn5S2fR+YiRpt3k/bE7j/OI5/QG40gj2Kq98Jtak/eR1Cr7Gqug5w==");
 
             startActivity(intent);
-
-            finish();
         });
 
         nuovaPassword.setOnClickListener( l -> {
