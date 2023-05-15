@@ -17,13 +17,19 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/resource"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.VanteaAccess"
-        tools:targetApi="33"
-        android:networkSecurityConfig="@xml/resource"
-        >
+        tools:targetApi="33">
+        <activity
+            android:name=".Credenziali"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".ServerConnection"
             android:exported="false" />

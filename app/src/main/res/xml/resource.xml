@@ -2,6 +2,7 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">192.168.0.106</domain>
+        <domain includeSubdomains="true">10.24.64.104</domain>
         <domain includeSubdomains="true">mioproxy.com</domain>
         <domain includeSubdomains="true">openam.docker.com</domain>
     </domain-config>

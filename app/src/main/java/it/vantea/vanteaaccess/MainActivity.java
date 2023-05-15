@@ -19,6 +19,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -145,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
                     builder.setPositiveButton(Html.fromHtml("<font color='#039221'>CONFERMA</font>"), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int arg1) {
                             try {
-                                scrivi(password);
+                                JSONObject obj = new JSONObject();
+                                obj.put("passwordAccesso",password);
+                                scrivi(obj.toString());
                                 Intent intent = new Intent(MainActivity.this, Logged.class);
                                 startActivity(intent);
                                 finish();
@@ -159,7 +164,14 @@ public class MainActivity extends AppCompatActivity {
                     builder.create();
                     builder.show();
                 }else{
-                    if(letto.equals(password)){
+                    String miaPassword="";
+                    try {
+                        JSONObject o = new JSONObject(letto);
+                        miaPassword = o.getString("passwordAccesso");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(miaPassword.equals(password)){
                         Intent intent = new Intent(MainActivity.this, Logged.class);
                         startActivity(intent);
                         finish();

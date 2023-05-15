@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -25,6 +28,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -35,12 +39,25 @@ public class ServerConnection extends AppCompatActivity {
 
     private ProgressBar pb;
     private String qrId;
+    private ImageView img;
+    private Button btn;
+    private TextView txt;
+    private String ip = "openam.docker.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_connection);
         pb=findViewById(R.id.progress);
+        txt = findViewById(R.id.messaggioAvvenuto);
+        btn = findViewById(R.id.backhome);
+        img = findViewById(R.id.checkImage);
+
+        img.setVisibility(View.GONE);
+        btn.setVisibility(View.GONE);
+        txt.setVisibility(View.GONE);
+
+
         qrId = getIntent().getStringExtra("code");
         try {
             auth();
@@ -48,11 +65,16 @@ public class ServerConnection extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-
+        btn.setOnClickListener( l -> {
+            Intent intent = new Intent(ServerConnection.this, Logged.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
+
     private void auth() throws JSONException {
-        String url = "http://openam.docker.com:8080/openam/json/authenticate";
+        String url = "http://"+ip+":8080/openam/json/authenticate";
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
@@ -93,7 +115,7 @@ public class ServerConnection extends AppCompatActivity {
 
     private void connection(String id) throws JSONException {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://openam.docker.com:8080/openam/json/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
+        String url = "http://"+ip+":8080/openam/json/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -126,7 +148,7 @@ public class ServerConnection extends AppCompatActivity {
 
 
     private void finalSend(String id, String body) throws JSONException {
-        String url = "http://openam.docker.com:8080/openam/json/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
+        String url = "http://"+ip+":8080/openam/json/authenticate?&authIndexType=service&authIndexValue=qr&ForceAuth=true&sessionUpgradeSSOTokenId="+id;
 
 
 
@@ -190,6 +212,9 @@ public class ServerConnection extends AppCompatActivity {
             @Override
             public void run() {
                 pb.setVisibility(View.GONE);
+                img.setVisibility(View.VISIBLE);
+                btn.setVisibility(View.VISIBLE);
+                txt.setVisibility(View.VISIBLE);
             }
         });
     }
