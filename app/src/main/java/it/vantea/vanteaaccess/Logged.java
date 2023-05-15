@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -25,20 +26,22 @@ import java.io.IOException;
 public class Logged extends AppCompatActivity {
 
 
-    private CardView nuovaPassword, qr, credenziali;
-    private TextView testo, testo2;
+    private CardView  qr, credenziali;
+    private TextView testo;
+    private ImageView settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged);
         qr = findViewById(R.id.card);
-        nuovaPassword = findViewById(R.id.modificapassword);
         testo = findViewById(R.id.testolog);
-        testo2 = findViewById(R.id.oppure);
         credenziali = findViewById(R.id.credenziali);
+        settings = findViewById(R.id.settings);
+
+
         JSONObject letto = null;
-        Boolean registered = false;
+
         try {
             letto = new JSONObject(leggi());
         } catch (JSONException e) {
@@ -66,20 +69,14 @@ public class Logged extends AppCompatActivity {
         qr.setOnClickListener( l -> {
             //Fase definitiva usare questo
             Intent intent = new Intent(Logged.this, Scanner.class);
-
-            //In testing usare questo
-
-            //Intent intent = new Intent(Logged.this, ServerConnection.class);
-            //intent.putExtra("code","AQICzK6N3B8+2gix69rgWTOGtzTo9P1gHcW19pq1gGOF5UbQYd7yv/h043Ur6kpR+iZAQKCB4GEk9hg+OKu583HOe1j80YKGhdES1Bn5S2fR+YiRpt3k/bE7j/OI5/QG40gj2Kq98Jtak/eR1Cr7Gqug5w==");
-
             startActivity(intent);
         });
 
-        nuovaPassword.setOnClickListener( l -> {
-            Intent intent = new Intent(Logged.this, MainActivity.class);
-            intent.putExtra("message","Registra la nuova password");
+        settings.setOnClickListener( l -> {
+            Intent intent = new Intent(Logged.this, Settings.class);
             startActivity(intent);
         });
+
     }
 
     private String leggi(){
@@ -104,9 +101,7 @@ public class Logged extends AppCompatActivity {
 
     private void setVisibilityAll(boolean vis){
             qr.setVisibility(vis == false ? View.GONE : View.VISIBLE);
-            nuovaPassword.setVisibility(vis == false ? View.GONE : View.VISIBLE);
             testo.setVisibility(vis == false ? View.GONE : View.VISIBLE);
-            testo2.setVisibility(vis == false ? View.GONE : View.VISIBLE);
             credenziali.setVisibility(vis == false ? View.VISIBLE : View.GONE);
     }
 }

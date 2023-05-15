@@ -143,7 +143,6 @@ public class ServerConnection extends AppCompatActivity {
                 } catch (JSONException e) {
                     Log.e("ERRORE", "Errore terzo invio");
                 }
-                stopProgressBar();
             }
         }, new Response.ErrorListener() {
             @Override

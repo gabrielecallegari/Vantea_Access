@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Logged">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/settings"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/settings"
+        />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +37,7 @@
         app:cardElevation="10dp"
         app:cardCornerRadius="5dp"
         android:id="@+id/card"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         >
         <ImageView
             android:layout_width="wrap_content"
@@ -74,59 +86,8 @@
         />
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Oppure"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/testolog"
-        android:layout_marginTop="50dp"
-        android:id="@+id/oppure"
-        />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="5dp"
-        app:layout_constraintTop_toBottomOf="@id/oppure"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp"
-        android:id="@+id/modificapassword"
-        >
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Modifica la password"
-                android:textSize="15dp"
-                android:padding="20dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:id="@+id/labelpasswordnuova"
-                app:layout_constraintEnd_toStartOf="@id/immaginepasswordnuova"
-                />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/key"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/labelpasswordnuova"
-                android:id="@+id/immaginepasswordnuova"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingRight="10dp"
-                />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
